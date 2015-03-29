@@ -13,7 +13,8 @@ class ClienteMapper
     {
         return [
             'nome'=>$cliente->getNome(),
-            'email'=>$cliente->getEmail()
+            'email'=>$cliente->getEmail(),
+            'cpfCnpj'=>$cliente->getCpfCnpj()
         ];
     }
 } 

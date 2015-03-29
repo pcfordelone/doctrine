@@ -1,0 +1,11 @@
+{
+    "require": {
+        "silex/silex": "~1.2"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "FRD\\Sistema\\":"src/FRD/Sistema/"
+        }
+    }
+}

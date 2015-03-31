@@ -5,7 +5,7 @@ namespace FRD\Sistema\Entity;
 
 class Cliente
 {
-    private $nome, $email, $cpfCnpj;
+    private $id, $nome, $email, $cpfCnpj;
 
     public function setCpfCnpj($cpfCnpj) { $this->cpfCnpj = $cpfCnpj; return $this; }
     public function getCpfCnpj() { return $this->cpfCnpj; }
@@ -15,5 +15,8 @@ class Cliente
 
     public function setNome($nome) { $this->nome = $nome; return $this; }
     public function getNome() { return $this->nome; }
+
+    public function setId($id) { $this->id = $id; return $this; }
+    public function getId() { return $this->id; }
 
 }

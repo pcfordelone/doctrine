@@ -1,0 +1,33 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h1>Clientes</h1>
+            <ul>
+                {% for cliente in clientes %}
+                    <li><a href="clientes/{{ cliente.id }}">{{ cliente.nome }} ({{ cliente.email }})</a></li>
+                {% endfor %}
+            </ul>
+            <h3>Inserir novo cliente:</h3>
+            <form role="form" method="post" action="">
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" class="form-control" id="nome" name="nome" />
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" class="form-control" id="email" name="email" />
+                </div>
+                <div class="form-group">
+                    <label for="cpfCnpj">CPF/CNPJ</label>
+                    <input type="text" class="form-control" id="cpfCnpj" name="cpfCnpj"/>
+                </div>
+
+                <button type="submit" name="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

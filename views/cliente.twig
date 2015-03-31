@@ -1,0 +1,17 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h2>{{ cliente.nome }}</h2>
+                <p>
+                    Email: {{ cliente.email }}<br/>
+                    CPF/CNPJ: {{ cliente.cpfCnpj }}
+                </p>
+
+                <a href="/clientes">Voltar</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

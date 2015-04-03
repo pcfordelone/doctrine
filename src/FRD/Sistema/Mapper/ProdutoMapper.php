@@ -29,8 +29,9 @@ class ProdutoMapper
 
     function update(Produto $produto)
     {
-        $query = "UPDATE produtos SET nome = :nome, descricao = :descricao, valor = :valor";
+        $query = "UPDATE produtos SET nome = :nome, descricao = :descricao, valor = :valor WHERE id=:id";
         $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(":id", $produto->getId());
         $stmt->bindValue(":nome", $produto->getNome());
         $stmt->bindValue(":descricao", $produto->getDescricao());
         $stmt->bindValue(":valor", $produto->getValor());

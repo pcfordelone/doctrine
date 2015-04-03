@@ -2,6 +2,8 @@
 
 require_once __DIR__.'/../bootstrap.php';
 
+use \Symfony\Component\HttpFoundation\Request;
+
 $app['dbConn'] = function() {
     $pdo = new PDO("mysql:host=localhost;dbname=code_silex","root","root",array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
     return $pdo;
@@ -66,10 +68,60 @@ $app->get("/cliente", function() use($app) {
     return $app->json($result);
 });
 
+// Produtos --------------------------------------------------------------- //
+Symfony\Component\HttpFoundation\Request::enableHttpMethodParameterOverride();
+
 $app->get("/produtos", function() use($app) {
     $dados = $app['ProdutoService']->fetchAll();
 
     return $app['twig']->render('produtos.twig',['produtos'=>$dados]);
+})->bind("prod");
+
+$app->get("/produtos/{id}", function($id) use($app) {
+    $dados = $app['ProdutoService']->find($id);
+
+    return $app['twig']->render('produto.twig',['produto'=>$dados]);
 });
+
+$app->post("/produtos", function(Request $request) use($app) {
+    $data['nome'] = $request->get('nome');
+    $data['descricao'] = $request->get('descricao');
+    $data['valor'] = $request->get('valor');
+
+    $app['ProdutoService']->insert($data);
+
+    $dados = $app['ProdutoService']->fetchAll();
+    $alert = "Produto {$request->get('nome')} adicionado com sucesso";
+
+    return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'alert'=>$alert]);
+
+})->bind('cadastrar_produto');
+
+
+$app->put("produtos/{id}", function(Request $request, $id) use($app) {
+    $data['id'] = $id;
+    $data['nome'] = $request->get('nome');
+    $data['descricao'] = $request->get('descricao');
+    $data['valor'] = $request->get('valor');
+    $app['ProdutoService']->update($data, $id);
+
+    $dados = $app['ProdutoService']->fetchAll();
+    $alert = "Produto {$request->get('nome')} atualizado com sucesso";
+
+    return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'alert'=>$alert]);
+
+})->bind('atualizar_produto');
+
+$app->delete("/produtos/{id}", function($id, Request $request) use($app) {
+    $alert = "produto {$request->get('nome')} excluido com sucesso ";
+    $app['ProdutoService']->delete($id);
+
+    $dados = $app['ProdutoService']->fetchAll();
+
+    return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'alert'=>$alert]);
+
+})->bind('apagar_produto');
+
+// ------------------------------------------------------------------------ //
 
 $app->run();

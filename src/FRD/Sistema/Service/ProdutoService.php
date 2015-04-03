@@ -29,6 +29,7 @@ class ProdutoService
 
     function update(array $data)
     {
+        $this->produto->setId($data['id']);
         $this->produto->setNome($data['nome']);
         $this->produto->setDescricao($data['descricao']);
         $this->produto->setValor($data['valor']);

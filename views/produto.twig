@@ -1,0 +1,17 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h2>Produtos</h2>
+                <p>
+                    Nome: {{ produto.nome }} <br/>
+                    Descrição: {{ produto.descricao }} <br/>
+                    Valor: R$ {{ produto.valor }}
+                </p>
+                <a href="{{ path ('prod') }}">Voltar</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -10,3 +10,6 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+$app->register(new Silex\Provider\ValidatorServiceProvider());
+
+Symfony\Component\HttpFoundation\Request::enableHttpMethodParameterOverride();

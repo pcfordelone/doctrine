@@ -2,11 +2,10 @@
 
 namespace FRD\Sistema\Service;
 
-
-use FRD\Sistema\Entity\Cliente;
 use FRD\Sistema\Entity\Produto;
-use FRD\Sistema\Mapper\ClienteMapper;
 use FRD\Sistema\Mapper\ProdutoMapper;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 class ProdutoService
 {
@@ -23,6 +22,7 @@ class ProdutoService
         $this->produto->setNome($data['nome']);
         $this->produto->setDescricao($data['descricao']);
         $this->produto->setValor($data['valor']);
+
 
         return $this->mapper->insert($this->produto);
     }

@@ -12,6 +12,8 @@ class ApiProdutosController implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        Request::enableHttpMethodParameterOverride();
+
         $api_produto = $app['controllers_factory'];
 
         $api_produto->get("/", function() use($app) {
@@ -28,7 +30,7 @@ class ApiProdutosController implements ControllerProviderInterface
 
         $api_produto->post("/", function(Request $request) use($app) {
             $data['nome'] = $request->get('nome');
-            $data['valor'] = $request->get('valor');
+            $data['valor'] = floatval($request->get('valor'));
             $data['descricao'] = $request->get('descricao');
 
             $constraint = new Assert\Collection(array(

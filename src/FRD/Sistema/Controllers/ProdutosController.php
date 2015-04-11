@@ -12,6 +12,8 @@ class ProdutosController implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        Request::enableHttpMethodParameterOverride();
+
         $produtos = $app['controllers_factory'];
 
         $produtos->get("/", function() use($app) {

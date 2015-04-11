@@ -2,10 +2,36 @@
 
 namespace FRD\Sistema\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="produtos")
+ */
 
 class Produto
 {
-    private $id, $nome, $descricao, $valor;
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $nome;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $descricao;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $valor;
 
     public function setId($id) { $this->id = $id; return $this; }
     public function getId() { return $this->id; }
@@ -18,5 +44,4 @@ class Produto
 
     public function setValor($valor) { $this->valor = $valor; return $this; }
     public function getValor() { return $this->valor; }
-
 }

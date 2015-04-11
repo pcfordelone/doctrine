@@ -2,53 +2,74 @@
 
 namespace FRD\Sistema\Service;
 
+use Doctrine\ORM\EntityManager;
 use FRD\Sistema\Entity\Produto;
 use FRD\Sistema\Mapper\ProdutoMapper;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 class ProdutoService
 {
-    private $produto, $mapper;
+    private $em;
 
-    function __construct(Produto $produto, ProdutoMapper $mapper)
+    function __construct(EntityManager $em)
     {
-        $this->produto = $produto;
-        $this->mapper = $mapper;
+        $this->em = $em;
     }
 
     function insert(array $data)
     {
-        $this->produto->setNome($data['nome']);
-        $this->produto->setDescricao($data['descricao']);
-        $this->produto->setValor($data['valor']);
 
+        $produto = new Produto();
+        $produto
+            ->setNome($data["nome"])
+            ->setDescricao($data["descricao"])
+            ->setValor($data["valor"])
+        ;
 
-        return $this->mapper->insert($this->produto);
+        $this->em->persist($produto);
+        $this->em->flush();
+
+        return $produto->getId();
     }
 
-    function update(array $data)
+    function update($id, array $data)
     {
-        $this->produto->setId($data['id']);
-        $this->produto->setNome($data['nome']);
-        $this->produto->setDescricao($data['descricao']);
-        $this->produto->setValor($data['valor']);
+        $produto = $this->em->getReference("FRD\Sistema\Entity\Produto", $id);
+        $produto
+            ->setNome($data["nome"])
+            ->setDescricao($data["descricao"])
+            ->setValor($data["valor"])
+        ;
 
-        return $this->mapper->update($this->produto);
+        $this->em->persist($produto);
+        $this->em->flush();
+
+        return $produto;
     }
 
     function delete($id)
     {
-        return $this->mapper->delete($id);
+        $produto = $this->em->getReference("FRD\Sistema\Entity\Produto", $id);
+        $this->em->remove($produto);
+        $this->em->flush();
+
+        return true;
     }
 
-    function fetchAll()
+    function findAll()
     {
-        return $this->mapper->fetchAll();
+        $produto = $this->em->getRepository("FRD\Sistema\Entity\Produto");
+        $result = $produto->findAll();
+
+        return $result;
     }
 
     function find($id)
     {
-        return $this->mapper->find($id);
+        $produto = $this->em->getRepository("FRD\Sistema\Entity\Produto");
+
+        return $produto->find($id);;
     }
 } 

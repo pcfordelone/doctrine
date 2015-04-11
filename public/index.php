@@ -7,6 +7,6 @@ use FRD\Sistema\App as Application;
 
 $app = new Application(array(
     "debug" => true
-));
+), $em);
 
 $app->run();

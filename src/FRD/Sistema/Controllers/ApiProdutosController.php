@@ -2,7 +2,6 @@
 
 namespace FRD\Sistema\Controllers;
 
-
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +16,7 @@ class ApiProdutosController implements ControllerProviderInterface
         $api_produto = $app['controllers_factory'];
 
         $api_produto->get("/", function() use($app) {
-            $data = $app['ProdutoService']->fetchAll();
+            $data = $app['ProdutoService']->findAll();
 
             return $app->json($data);
         });
@@ -52,13 +51,11 @@ class ApiProdutosController implements ControllerProviderInterface
         });
 
         $api_produto->put("/{id}", function(Request $request, $id) use($app) {
-            $data['id'] = $id;
             $data['nome'] = $request->get('nome');
             $data['valor'] = $request->get('valor');
             $data['descricao'] = $request->get('descricao');
 
             $constraint = new Assert\Collection(array(
-                'id' => new Assert\NotBlank(),
                 'nome' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 5))),
                 'valor' => new Assert\NotBlank(),
                 'descricao'  => new Assert\Length(array('min' => 10)),
@@ -73,11 +70,11 @@ class ApiProdutosController implements ControllerProviderInterface
                 return false;
             }
 
-            $app['ProdutoService']->update($data);
+            $app['ProdutoService']->update($id, $data);
             return $app->json($data);
         });
+
         $api_produto->delete("/{id}", function($id) use($app) {
-            $data['id'] = $id;
             $app['ProdutoService']->delete($id);
             return $app->json(true);
         });

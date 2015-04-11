@@ -2,6 +2,7 @@
 
 namespace FRD\Sistema;
 
+use Doctrine\ORM\EntityManager;
 use Silex\Application;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -15,7 +16,7 @@ use FRD\Sistema\Controllers\ApiProdutosController;
 
 class App extends Application
 {
-    public function __construct(array $values = array())
+    public function __construct(array $values = array(), $em)
     {
         parent::__construct($values);
         $app = $this;
@@ -27,22 +28,9 @@ class App extends Application
         $app->register(new UrlGeneratorServiceProvider());
         $app->register(new ValidatorServiceProvider());
 
-        $app['dbConn'] = $app->share(function() {
-            try {
-                $pdo = new \PDO("mysql:host=localhost;dbname=code_silex","root","root",array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
-                $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            }
-            catch (\PDOException $e) {
-                die("Não foi possível estabelecer uma conexão com o banco de dados.<br>Código do Erro: ".$e->getCode()."<br> Mensagem: ".$e->getMessage());
-            }
-            return $pdo;
-        });
+        $app['ProdutoService'] = function() use($em) {
 
-        $app['ProdutoService'] = function() use($app) {
-            $produto = new Produto();
-            $produtoMapper = new ProdutoMapper($app['dbConn']);
-
-            $produtoService = new ProdutoService($produto, $produtoMapper);
+            $produtoService = new ProdutoService($em);
 
             return $produtoService;
         };

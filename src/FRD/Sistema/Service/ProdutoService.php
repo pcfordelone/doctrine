@@ -72,4 +72,11 @@ class ProdutoService
 
         return $produto->find($id);;
     }
+
+    function buscar($keyword)
+    {
+        $produto = $this->em->getRepository("FRD\Sistema\Entity\Produto");
+
+        return $produto->buscar($keyword);
+    }
 } 

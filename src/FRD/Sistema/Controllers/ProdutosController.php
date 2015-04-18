@@ -16,17 +16,29 @@ class ProdutosController implements ControllerProviderInterface
 
         $produtos = $app['controllers_factory'];
 
+
         $produtos->get("/", function() use($app) {
-            $dados = $app['ProdutoService']->fetchAll();
+            $dados = $app['ProdutoService']->findAll();
 
             return $app['twig']->render('produtos.twig',['produtos'=>$dados]);
         })->bind("prod");
+
 
         $produtos->get("/{id}", function($id) use($app) {
             $dados = $app['ProdutoService']->find($id);
 
             return $app['twig']->render('produto.twig',['produto'=>$dados]);
         });
+
+
+        $produtos->post("/search/", function(Request $request) use($app) {
+            $keyword = "%".$request->get('keyword')."%";
+            $dados = $app['ProdutoService']->buscar($keyword);
+
+
+            return $app['twig']->render('produto_search.twig',["busca"=>$dados]);
+        })->bind("busca_produto");
+
 
         $produtos->post("/", function(Request $request) use($app) {
             $data['nome'] = $request->get('nome');
@@ -50,12 +62,13 @@ class ProdutosController implements ControllerProviderInterface
 
             $app['ProdutoService']->insert($data);
 
-            $dados = $app['ProdutoService']->fetchAll();
             $alert = "Produto {$request->get('nome')} adicionado com sucesso";
+            $alertType = "alert-success";
 
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'alert'=>$alert]);
+            return $app->redirect("/produtos/?alert={$alert}&type={$alertType}");
 
         })->bind('cadastrar_produto');
+
 
         $produtos->put("/{id}", function(Request $request, $id) use($app) {
             $data['id'] = $id;
@@ -79,22 +92,23 @@ class ProdutosController implements ControllerProviderInterface
                 return false;
             }
 
-            $app['ProdutoService']->update($data, $id);
+            $app['ProdutoService']->update($id, $data);
 
-            $dados = $app['ProdutoService']->fetchAll();
-            $alert = "Produto {$request->get('nome')} atualizado com sucesso";
+            $alert = "Produto {$request->get('nome')} adicionado com sucesso";
+            $alertType = "alert-warning";
 
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'alert'=>$alert]);
+            return $app->redirect("/produtos/?alert={$alert}&type={$alertType}");
 
         })->bind('atualizar_produto');
 
+
         $produtos->delete("/{id}", function($id, Request $request) use($app) {
             $alert = "produto {$request->get('nome')} excluido com sucesso ";
+            $alertType = "alert-danger";
+
             $app['ProdutoService']->delete($id);
 
-            $dados = $app['ProdutoService']->fetchAll();
-
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'alert'=>$alert]);
+            return $app->redirect("/produtos/?alert={$alert}&type={$alertType}");
 
         })->bind('apagar_produto');
 

@@ -1,0 +1,17 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h2>Resultados da Busca</h2>
+                <ul>
+                    {% for item in busca %}
+                        <li><a href="/produtos/{{ item.id }}">{{ item.nome }} - {{ item.descricao }}</a></li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -5,12 +5,22 @@
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <h2>Resultados da Busca</h2>
+                <h4>Foram encontrados {{ resultados }} resultados em sua busca:</h4>
                 <ul>
                     {% for item in busca %}
                         <li><a href="/produtos/{{ item.id }}">{{ item.nome }} - {{ item.descricao }}</a></li>
                     {% endfor %}
                 </ul>
+                <p>
+                    Paginas:
+                    {% for i in 1..pages %}
+                        <a href="/produtos/search/?keyword=passeio&page={{ i }}">{{ i }}</a>
+                    {% endfor %}
+                </p>
 
+                <p>
+                    <a class="btn btn-info voltar" href="{{ app.request.headers.get('referer') }}" />Voltar</a>
+                </p>
             </div>
         </div>
     </div>

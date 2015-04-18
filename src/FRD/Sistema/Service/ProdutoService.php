@@ -51,8 +51,7 @@ class ProdutoService
 
     function delete($id)
     {
-        $produto = $this->em->getReference("FRD\Sistema\Entity\Produto", $id);
-        $this->em->remove($produto);
+        $this->em->remove($this->em->getReference("FRD\Sistema\Entity\Produto", $id));
         $this->em->flush();
 
         return true;
@@ -60,23 +59,16 @@ class ProdutoService
 
     function findAll()
     {
-        $produto = $this->em->getRepository("FRD\Sistema\Entity\Produto");
-        $result = $produto->findAll();
-
-        return $result;
+        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->findAll();
     }
 
     function find($id)
     {
-        $produto = $this->em->getRepository("FRD\Sistema\Entity\Produto");
-
-        return $produto->find($id);;
+        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->find($id);;
     }
 
-    function buscar($keyword)
+    function buscar($keyword, $pag, $max)
     {
-        $produto = $this->em->getRepository("FRD\Sistema\Entity\Produto");
-
-        return $produto->buscar($keyword);
+        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->buscar($keyword, $pag, $max);
     }
 } 

@@ -31,12 +31,17 @@ class ProdutosController implements ControllerProviderInterface
         });
 
 
-        $produtos->post("/search/", function(Request $request) use($app) {
+        $produtos->get("/search/", function(Request $request) use($app) {
             $keyword = "%".$request->get('keyword')."%";
-            $dados = $app['ProdutoService']->buscar($keyword);
+            $pag = $request->get('page');
+            $max = 10;
 
+            $dados = $app['ProdutoService']->buscar($keyword, $pag, $max);
 
-            return $app['twig']->render('produto_search.twig',["busca"=>$dados]);
+            $c = $dados->count();
+            $p = ceil($c / $max);
+
+            return $app['twig']->render('produto_search.twig',["busca"=>$dados, "resultados"=>$c, "pages"=>$p]);
         })->bind("busca_produto");
 
 

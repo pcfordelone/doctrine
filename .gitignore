@@ -3,3 +3,5 @@ vendor/
 .DS_Store
 public/.DS_Store
 /backup
+composer.lock
+/bin

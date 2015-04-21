@@ -2,6 +2,7 @@
 
 namespace FRD\Sistema\Entity;
 
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -15,8 +16,6 @@ class ProdutoRepository extends EntityRepository
                     OR p.nome LIKE '{$keyword}'"
         ;
 
-        echo $pag;
-
         $query =
             $this
             ->getEntityManager()
@@ -28,5 +27,23 @@ class ProdutoRepository extends EntityRepository
         $paginator =  new Paginator($query, $fetchJoinCollection = false);
 
         return $paginator;
+    }
+
+    public function findAll()
+    {
+        return $this
+            ->createQueryBuilder("p")
+            ->getQuery()
+            ->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY)
+        ;
+    }
+
+    public function find($id)
+    {
+        return $this
+                ->getEntityManager()
+                ->createQuery("SELECT p FROM FRD\Sistema\Entity\Produto p WHERE p.id = '{$id}'")
+                ->getResult(AbstractQuery::HYDRATE_ARRAY)
+        ;
     }
 } 

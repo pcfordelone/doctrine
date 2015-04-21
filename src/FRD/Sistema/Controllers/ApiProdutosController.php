@@ -25,7 +25,7 @@ class ApiProdutosController implements ControllerProviderInterface
         $api_produto->get("/{id}", function($id) use($app) {
             $data = $app['ProdutoService']->find($id);
 
-            return $app->json($data);
+            return $app->json($data[0]);
         });
 
 

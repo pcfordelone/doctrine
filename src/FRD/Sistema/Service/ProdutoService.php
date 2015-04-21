@@ -3,6 +3,7 @@
 namespace FRD\Sistema\Service;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query;
 use FRD\Sistema\App;
 use FRD\Sistema\Entity\Produto;
 use FRD\Sistema\Logger\Logger;
@@ -69,7 +70,7 @@ class ProdutoService
 
     function find($id)
     {
-        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->find($id);;
+        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->find($id);
     }
 
     function buscar($keyword, $pag, $max)

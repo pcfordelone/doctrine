@@ -26,7 +26,7 @@ class ProdutosController implements ControllerProviderInterface
         $produtos->get("/{id}", function($id) use($app) {
             $dados = $app['ProdutoService']->find($id);
 
-            return $app['twig']->render('produto.twig',['produto'=>$dados]);
+            return $app['twig']->render('produto.twig',['produto'=>$dados[0]]);
         });
 
 

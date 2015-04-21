@@ -21,8 +21,17 @@
 
                 <h3>Produtos Cadastrados</h3>
 
-                {% if app.request.query.get("alert") is defined %}
-                    <span class="{{ app.request.query.get("type") }}">{{ app.request.query.get("alert") }}</span>
+                {% if result is defined %}
+                    <span class="alert-success">{{ result }}</span>
+                {% endif %}
+
+                {% if errors is defined %}
+                    <span class="alert-danger">Foram encontrados erros:</span>
+                    <ul>
+                    {% for error in errors %}
+                        <li class="alert-danger">{{ error }}</li>
+                    {% endfor %}
+                    </ul>
                 {% endif %}
 
                 <table class="table table-striped">

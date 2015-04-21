@@ -21,31 +21,26 @@ class ApiProdutosController implements ControllerProviderInterface
             return $app->json($data);
         });
 
+
         $api_produto->get("/{id}", function($id) use($app) {
             $data = $app['ProdutoService']->find($id);
 
             return $app->json($data);
         });
 
+
         $api_produto->post("/", function(Request $request) use($app) {
             $data['nome'] = $request->get('nome');
             $data['valor'] = floatval($request->get('valor'));
             $data['descricao'] = $request->get('descricao');
 
-            $constraint = new Assert\Collection(array(
-                'nome' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 5))),
-                'valor' => new Assert\NotBlank(),
-                'descricao'  => new Assert\Length(array('min' => 10)),
-            ));
+            $validator = $app['ProdutoService']->validate($app, $data);
 
-            $errors = $app['validator']->validateValue($data, $constraint);
-
-            if (count($errors) > 0) {
-                foreach ($errors as $error) {
-                    echo $error->getPropertyPath().' '.$error->getMessage()."<br/>\n";
-                }
-                return false;
+            if (count($validator->getLogErrors()) > 0) {
+                $dados = $app['ProdutoService']->findAll();
+                return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'errors'=>$validator->getLogErrors()]);
             }
+
             $app['ProdutoService']->insert($data);
             return $app->json($data);
         });
@@ -55,19 +50,11 @@ class ApiProdutosController implements ControllerProviderInterface
             $data['valor'] = $request->get('valor');
             $data['descricao'] = $request->get('descricao');
 
-            $constraint = new Assert\Collection(array(
-                'nome' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 5))),
-                'valor' => new Assert\NotBlank(),
-                'descricao'  => new Assert\Length(array('min' => 10)),
-            ));
+            $validator = $app['ProdutoService']->validate($app, $data);
 
-            $errors = $app['validator']->validateValue($data, $constraint);
-
-            if (count($errors) > 0) {
-                foreach ($errors as $error) {
-                    echo $error->getPropertyPath().' '.$error->getMessage()."<br/>\n";
-                }
-                return false;
+            if (count($validator->getLogErrors()) > 0) {
+                $dados = $app['ProdutoService']->findAll();
+                return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'errors'=>$validator->getLogErrors()]);
             }
 
             $app['ProdutoService']->update($id, $data);

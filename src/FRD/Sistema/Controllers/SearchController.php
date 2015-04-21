@@ -13,7 +13,7 @@ class SearchController implements ControllerProviderInterface
 
         $busca->get("/", function() use($app) {
             return $app['twig']->render('search.twig',[]);
-        })->bind('index');
+        })->bind('search_index');
 
         return $busca;
     }

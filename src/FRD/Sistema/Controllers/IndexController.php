@@ -13,7 +13,7 @@ class IndexController implements ControllerProviderInterface
 
         $inicio->get("/", function() use($app) {
             return $app['twig']->render('index.twig',[]);
-        })->bind('index');
+        })->bind('home');
 
         return $inicio;
     }

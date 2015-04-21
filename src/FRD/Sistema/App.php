@@ -3,6 +3,7 @@
 namespace FRD\Sistema;
 
 use Doctrine\ORM\EntityManager;
+use FRD\Sistema\Logger\Logger;
 use Silex\Application;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -30,7 +31,8 @@ class App extends Application
 
         $app['ProdutoService'] = function() use($em) {
 
-            $produtoService = new ProdutoService($em);
+            $logger = new Logger();
+            $produtoService = new ProdutoService($em, $logger);
 
             return $produtoService;
         };

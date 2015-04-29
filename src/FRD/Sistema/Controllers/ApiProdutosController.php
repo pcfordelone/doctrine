@@ -18,6 +18,8 @@ class ApiProdutosController implements ControllerProviderInterface
         $api_produto->get("/", function() use($app) {
             $data = $app['ProdutoService']->findAll();
 
+            //var_dump($data);
+
             return $app->json($data);
         });
 
@@ -33,6 +35,7 @@ class ApiProdutosController implements ControllerProviderInterface
             $data['nome'] = $request->get('nome');
             $data['valor'] = floatval($request->get('valor'));
             $data['descricao'] = $request->get('descricao');
+            $data['categoria'] = intval($request->get('categoria'));
 
             $validator = $app['ProdutoService']->validate($app, $data);
 

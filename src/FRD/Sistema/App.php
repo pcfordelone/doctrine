@@ -3,7 +3,9 @@
 namespace FRD\Sistema;
 
 use Doctrine\ORM\EntityManager;
+use FRD\Sistema\Controllers\ApiCategoriaProdutosController;
 use FRD\Sistema\Logger\Logger;
+use FRD\Sistema\Service\CategoriaProdutoService;
 use Silex\Application;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -37,9 +39,18 @@ class App extends Application
             return $produtoService;
         };
 
+        $app['CategoriaProdutoService'] = function() use($em) {
+
+            $logger = new Logger();
+            $categoriaProdutoService = new CategoriaProdutoService($em, $logger);
+
+            return $categoriaProdutoService;
+        };
+
         $app->mount("/", new IndexController());
         $app->mount("/produtos", new ProdutosController());
         $app->mount("/api/produtos", new ApiProdutosController());
+        $app->mount("/api/categorias", new ApiCategoriaProdutosController());
     }
 
 } 

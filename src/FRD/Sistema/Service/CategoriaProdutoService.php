@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-class ProdutoService
+class CategoriaProdutoService
 {
     private $em;
     private $logger;
@@ -25,22 +25,15 @@ class ProdutoService
 
     function insert(array $data)
     {
-
-        $produto = new Produto();
-        $produto
+        $categoria = new CategoriaProduto();
+        $categoria
             ->setNome($data["nome"])
-            ->setDescricao($data["descricao"])
-            ->setValor($data["valor"])
         ;
 
-        $categoria = $this->em->getReference("FRD\Sistema\Entity\CategoriaProduto", $data['categoria']);
-        $produto->setCategoria($categoria);
-
-        $this->em->persist($produto);
+        $this->em->persist($categoria);
         $this->em->flush();
 
-        return $this->logger->success("Produto {$data['nome']} adicionado com sucesso");
-
+        return $this->logger->success("Categoria {$data['nome']} adicionada com sucesso");
     }
 
     function update($id, array $data)
@@ -68,7 +61,7 @@ class ProdutoService
 
     function findAll()
     {
-        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->findAll();
+        return $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->findAll();
     }
 
     function find($id)
@@ -88,7 +81,7 @@ class ProdutoService
             'nome' => new Assert\NotBlank(),
             'valor' => new Assert\NotEqualTo(0),
             'descricao' => new Assert\NotBlank(),
-            'categoria' => new Assert\NotNull(),
+            'categoria' => new Assert\NotBlank(),
         ));
 
         $validator = new ValidatorService($app, $data, $constraint);

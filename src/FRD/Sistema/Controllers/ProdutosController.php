@@ -18,7 +18,10 @@ class ProdutosController implements ControllerProviderInterface
 
         $produtos->get("/", function() use($app) {
             $dados = $app['ProdutoService']->findAll();
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados]);
+            $categorias = $app['CategoriaProdutoService']->findAll();
+
+            var_dump($dados);
+            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'categorias'=>$categorias]);
         })->bind("produtos");
 
 
@@ -33,6 +36,7 @@ class ProdutosController implements ControllerProviderInterface
 
         $produtos->post("/", function(Request $request) use($app) {
             $data['nome'] = $request->get('nome');
+            $data['categoria'] = $request->get('categoria');
             $data['descricao'] = $request->get('descricao');
             $data['valor'] = floatval($request->get('valor'));
 
@@ -46,7 +50,9 @@ class ProdutosController implements ControllerProviderInterface
             $result = $app['ProdutoService']->insert($data);
 
             $dados = $app['ProdutoService']->findAll();
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'result'=>$result]);
+            $categorias = $app['CategoriaProdutoService']->findAll();
+
+            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'result'=>$result, 'categorias'=>$categorias]);
 
         })->bind('cadastrar_produto');
 
@@ -69,18 +75,15 @@ class ProdutosController implements ControllerProviderInterface
             $dados = $app['ProdutoService']->findAll();
             return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'result'=>$result]);
 
-
         })->bind('atualizar_produto');
 
 
 
-        $produtos->delete("/{id}", function($id, Request $request) use($app) {
-            $alert = "produto {$request->get('nome')} excluido com sucesso ";
-            $alertType = "alert-danger";
+        $produtos->delete("/{id}", function($id) use($app) {
+            $result = $app['ProdutoService']->delete($id);
 
-            $app['ProdutoService']->delete($id);
-
-            return $app->redirect("/produtos/?alert={$alert}&type={$alertType}");
+            $dados = $app['ProdutoService']->findAll();
+            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'result'=>$result]);
 
         })->bind('apagar_produto');
 

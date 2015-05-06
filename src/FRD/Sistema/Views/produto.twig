@@ -4,13 +4,46 @@
     <div class="container">
         <div class="row clearfix">
             <div class="col-md-12 column">
-                <h2>Produtos</h2>
-                <p>
-                    Nome: {{ produto.nome }} <br/>
-                    Descrição: {{ produto.descricao }} <br/>
-                    Valor: R$ {{ produto.valor }}
-                </p>
-                <a class="btn btn-info voltar" href="{{ path ('produtos') }}" />Voltar</a>
+                <h3>Editar {{ produto.nome }}</h3>
+                <form class="form-group" action="{{ path('atualizar_produto', {'id': produto.id}) }}" method="POST" >
+                    <input type="hidden" name="_method" value="PUT" />
+                    <div class="form-group">
+                        <label for="nome">Nome:</label>
+                        <input class="form-control" type="text" name="nome" id="nome" size="40" value="{{ produto.nome }}" />
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoria:</label>
+                        <select class="form-control" name="categoria" id="categoria">
+                            {% for categoria in categorias %}
+                                <option value={{ categoria.id }} {% if produto.categoria.id == categoria.id %}selected{% endif %}>
+                                    {{ categoria.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor">Valor: (R$)</label>
+                        <input class="form-control" type="number" step="any" name="valor" id="valor" value="{{ produto.valor }}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="tags">Tags:</label>
+                        {% for tag in tags %}
+                            <input type="checkbox" name="tags[]" value="{{ tag.id }}"
+                            {% for produto_tag in produto.tags %}
+                                {% if produto_tag.id == tag.id %}
+                                    checked="true"
+                                {% endif %}
+                            {% endfor %}
+                            /> {{ tag.nome }}
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="descricao">Descrição:</label>
+                        <textarea id="descricao" class="form-control" name="descricao">{{ produto.descricao }}</textarea>
+                    </div>
+                    <a class="btn btn-info voltar" href="{{ path ('produtos') }}">Voltar</a>
+                    <button type="submit" class="btn btn-success">Atualizar Produto</button>
+                </form>
             </div>
         </div>
     </div>

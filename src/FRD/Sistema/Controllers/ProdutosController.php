@@ -17,20 +17,19 @@ class ProdutosController implements ControllerProviderInterface
         $produtos = $app['controllers_factory'];
 
         $produtos->get("/", function() use($app) {
-            $dados = $app['ProdutoService']->findAll();
-            $categorias = $app['CategoriaProdutoService']->findAll();
+            $dados = $app['ProdutosData'];
 
-            var_dump($dados);
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'categorias'=>$categorias]);
+            return $app['twig']->render('produtos.twig',['produtos'=>$dados['produtos'], 'categorias'=>$dados['categorias'], 'tags'=>$dados['tags']]);
         })->bind("produtos");
-
 
 
         $produtos->get("/{id}", function($id) use($app) {
             $dados = $app['ProdutoService']->find($id);
+            $categorias = $app['CategoriaProdutoService']->findAll();
+            $tags = $app['TagsService']->findAll();
 
-            return $app['twig']->render('produto.twig',['produto'=>$dados[0]]);
-        });
+            return $app['twig']->render('produto.twig',['produto'=>$dados, 'categorias'=>$categorias, 'tags'=>$tags]);
+        })->bind("produto");
 
 
 
@@ -39,20 +38,21 @@ class ProdutosController implements ControllerProviderInterface
             $data['categoria'] = $request->get('categoria');
             $data['descricao'] = $request->get('descricao');
             $data['valor'] = floatval($request->get('valor'));
+            $data['tags'] = $request->get('tags');
 
             $validator = $app['ProdutoService']->validate($app, $data);
 
             if (count($validator->getLogErrors()) > 0) {
-                $dados = $app['ProdutoService']->findAll();
-                return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'errors'=>$validator->getLogErrors()]);
+                $dados = $app['ProdutosData'];
+
+                return $app['twig']->render('produtos.twig',['produtos'=>$dados['produtos'], 'categorias'=>$dados['categorias'], 'tags'=>$dados['tags'], 'errors'=>$validator->getLogErrors()]);
             }
 
             $result = $app['ProdutoService']->insert($data);
 
-            $dados = $app['ProdutoService']->findAll();
-            $categorias = $app['CategoriaProdutoService']->findAll();
+            $dados = $app['ProdutosData'];
 
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'result'=>$result, 'categorias'=>$categorias]);
+            return $app['twig']->render('produtos.twig',['produtos'=>$dados['produtos'], 'result'=>$result, 'categorias'=>$dados['categorias'], 'tags'=>$dados['tags']]);
 
         })->bind('cadastrar_produto');
 
@@ -60,20 +60,24 @@ class ProdutosController implements ControllerProviderInterface
 
         $produtos->put("/{id}", function(Request $request, $id) use($app) {
             $data['nome'] = $request->get('nome');
+            $data['categoria'] = $request->get('categoria');
             $data['descricao'] = $request->get('descricao');
             $data['valor'] = floatval($request->get('valor'));
+            $data['tags'] = $request->get('tags');
 
             $validator = $app['ProdutoService']->validate($app, $data);
 
             if (count($validator->getLogErrors()) > 0) {
-                $dados = $app['ProdutoService']->findAll();
-                return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'errors'=>$validator->getLogErrors()]);
+                $dados = $app['ProdutosData'];
+
+                return $app['twig']->render('produtos.twig',['produtos'=>$dados['produtos'], 'categorias'=>$dados['categorias'], 'tags'=>$dados['tags'], 'errors'=>$validator->getLogErrors()]);
             }
 
             $result = $app['ProdutoService']->update($id, $data);
 
-            $dados = $app['ProdutoService']->findAll();
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'result'=>$result]);
+            $dados = $app['ProdutosData'];
+
+            return $app['twig']->render('produtos.twig',['produtos'=>$dados['produtos'], 'result'=>$result, 'categorias'=>$dados['categorias'], 'tags'=>$dados['tags']]);
 
         })->bind('atualizar_produto');
 
@@ -82,8 +86,9 @@ class ProdutosController implements ControllerProviderInterface
         $produtos->delete("/{id}", function($id) use($app) {
             $result = $app['ProdutoService']->delete($id);
 
-            $dados = $app['ProdutoService']->findAll();
-            return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'result'=>$result]);
+            $dados = $app['ProdutosData'];
+
+            return $app['twig']->render('produtos.twig',['produtos'=>$dados['produtos'], 'result'=>$result, 'categorias'=>$dados['categorias'], 'tags'=>$dados['tags']]);
 
         })->bind('apagar_produto');
 
@@ -106,4 +111,4 @@ class ProdutosController implements ControllerProviderInterface
         return $produtos;
     }
 
-} 
+}

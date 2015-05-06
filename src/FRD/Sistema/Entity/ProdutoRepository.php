@@ -11,10 +11,15 @@ class ProdutoRepository extends EntityRepository
 {
     public function buscar($keyword, $pag, $max)
     {
-        $dql = "SELECT p FROM FRD\Sistema\Entity\Produto p
+        /*$dql = "SELECT p FROM FRD\Sistema\Entity\Produto p
                     WHERE p.descricao LIKE '{$keyword}'
-                    OR p.nome LIKE '{$keyword}'"
+                    OR p.nome LIKE '{$keyword}'"*/
         ;
+        $dql = "SELECT p, t FROM FRD\Sistema\Entity\Produto p JOIN p.tags t
+                    WHERE p.descricao LIKE '{$keyword}'
+                    OR p.nome LIKE '{$keyword}'
+                    OR t.nome LIKE '{$keyword}'
+                    ";
 
         $query =
             $this
@@ -29,16 +34,20 @@ class ProdutoRepository extends EntityRepository
         return $paginator;
     }
 
-    public function findAll()
+    public function findAllApi()
     {
-        return $this
-            ->createQueryBuilder("p")
-            ->getQuery()
-            ->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY)
+        $dql = "SELECT p FROM FRD\Sistema\Entity\Produto p";
+
+        return
+            $this
+                ->getEntityManager()
+                ->createQuery($dql)
+                ->getResult(AbstractQuery::HYDRATE_ARRAY);
         ;
+
     }
 
-    public function find($id)
+    public function findApi($id)
     {
         return $this
                 ->getEntityManager()

@@ -7,15 +7,18 @@ use Doctrine\ORM\Query;
 use FRD\Sistema\App;
 use FRD\Sistema\Entity\Produto;
 use FRD\Sistema\Entity\CategoriaProduto;
+use FRD\Sistema\Entity\Tag;
+use FRD\Sistema\Entity\TagSerializer;
 use FRD\Sistema\Logger\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-class CategoriaProdutoService
+class TagsService
 {
     private $em;
     private $logger;
+    private $tagArray;
 
     function __construct(EntityManager $em, Logger $logger)
     {
@@ -25,51 +28,51 @@ class CategoriaProdutoService
 
     function insert(array $data)
     {
-        $categoria = new CategoriaProduto();
-        $categoria
-            ->setNome($data["nome"])
-        ;
+        $tag = new Tag();
+        $tag->setNome($data["nome"]);
 
-        $this->em->persist($categoria);
+        $this->em->persist($tag);
         $this->em->flush();
 
-        return $this->logger->success("Categoria {$data['nome']} adicionada com sucesso");
+        return $this->logger->success("Tag {$data['nome']} adicionada com sucesso");
     }
 
     function update($id, array $data)
     {
-        $categoria = $this->em->getReference("FRD\Sistema\Entity\CategoriaProduto", $id);
-        $categoria
+        $tag = $this->em->getReference("FRD\Sistema\Entity\Tag", $id);
+        $tag
             ->setNome($data["nome"])
         ;
 
-        $this->em->persist($categoria);
+        $this->em->persist($tag);
         $this->em->flush();
 
-        return $this->logger->success("Categoria {$data['nome']} alterada com sucesso");
+        return $this->logger->success("Tag {$data['nome']} alterada com sucesso");
     }
 
     function delete($id)
     {
-        $this->em->remove($this->em->getReference("FRD\Sistema\Entity\CategoriaProduto", $id));
+        $this->em->remove($this->em->getReference("FRD\Sistema\Entity\Tag", $id));
         $this->em->flush();
 
-        return $this->logger->danger("Categoria excluído com sucesso");
+        return $this->logger->danger("Tag excluída com sucesso");
     }
 
     function findAll()
     {
-        return $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->findAll();
+        return $this->em->getRepository("FRD\Sistema\Entity\Tag")->findAll();
     }
 
-    function find($id)
+    function findAllApi()
     {
-        return $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->find($id);
-    }
+        $data = $this->em->getRepository("FRD\Sistema\Entity\Tag")->findAll();
+        $tagSerializer = new TagSerializer();
 
-    function buscar($keyword, $pag, $max)
-    {
-        return $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->buscar($keyword, $pag, $max);
+        foreach ($data as $object) {
+            $this->tagArray[] = $tagSerializer->serializer($object);
+        }
+
+        return $this->tagArray;
     }
 
     function validate(App $app, array $data)

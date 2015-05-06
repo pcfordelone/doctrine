@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-class ProdutoService
+class ApiProdutoService
 {
     private $em;
     private $logger;
@@ -38,7 +38,9 @@ class ProdutoService
         $categoria = $this->em->getReference("FRD\Sistema\Entity\CategoriaProduto", $data['categoria']);
         $produto->setCategoria($categoria);
 
-        foreach ($data["tags"] as $tag_id) {
+        $tags = explode(",", $data['tags']);
+
+        foreach ($tags as $tag_id) {
             $tag = $this->em->getReference("FRD\Sistema\Entity\Tag", $tag_id);
             $produto->addTag($tag);
         }
@@ -67,8 +69,9 @@ class ProdutoService
         $categoria = $this->em->getReference("FRD\Sistema\Entity\CategoriaProduto", $data['categoria']);
         $produto->setCategoria($categoria);
 
+        $tags = explode(",", $data['tags']);
 
-        foreach ($data["tags"] as $tag_id) {
+        foreach ($tags as $tag_id) {
             $tag = $this->em->getReference("FRD\Sistema\Entity\Tag", $tag_id);
             $produto->addTag($tag);
         }
@@ -89,11 +92,6 @@ class ProdutoService
 
     function findAll()
     {
-        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->findAll();
-    }
-
-    function findAllApi()
-    {
         $data = $this->em->getRepository("FRD\Sistema\Entity\Produto")->findAll();
 
         foreach ($data as $object) {
@@ -106,17 +104,7 @@ class ProdutoService
 
     function find($id)
     {
-        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->find($id);
-    }
-
-    function findApi($id)
-    {
         return $this->em->getRepository("FRD\Sistema\Entity\Produto")->findApi($id);
-    }
-
-    function buscar($keyword, $pag, $max)
-    {
-        return $this->em->getRepository("FRD\Sistema\Entity\Produto")->buscar($keyword, $pag, $max);
     }
 
     function validate(App $app, array $data)

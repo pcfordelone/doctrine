@@ -2,14 +2,16 @@
 
 namespace FRD\Sistema\Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="categoria_produto")
+ * @ORM\Table(name="tags")
  */
-class CategoriaProduto
+class Tag
 {
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -43,6 +45,4 @@ class CategoriaProduto
     {
         return $this->nome;
     }
-
-
 } 

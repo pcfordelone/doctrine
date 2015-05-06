@@ -4,8 +4,14 @@ namespace FRD\Sistema;
 
 use Doctrine\ORM\EntityManager;
 use FRD\Sistema\Controllers\ApiCategoriaProdutosController;
+use FRD\Sistema\Controllers\ApiTagController;
+use FRD\Sistema\Controllers\CategoriasController;
+use FRD\Sistema\Controllers\TagsController;
 use FRD\Sistema\Logger\Logger;
+use FRD\Sistema\Service\ApiCategoriaProdutoService;
+use FRD\Sistema\Service\ApiProdutoService;
 use FRD\Sistema\Service\CategoriaProdutoService;
+use FRD\Sistema\Service\TagsService;
 use Silex\Application;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -39,6 +45,14 @@ class App extends Application
             return $produtoService;
         };
 
+        $app['ApiProdutoService'] = function() use($em) {
+
+            $logger = new Logger();
+            $apiProdutoService = new ApiProdutoService($em, $logger);
+
+            return $apiProdutoService;
+        };
+
         $app['CategoriaProdutoService'] = function() use($em) {
 
             $logger = new Logger();
@@ -47,10 +61,37 @@ class App extends Application
             return $categoriaProdutoService;
         };
 
+        $app['ApiCategoriaProdutoService'] = function() use($em) {
+
+            $logger = new Logger();
+            $api = new ApiCategoriaProdutoService($em, $logger);
+
+            return $api;
+        };
+
+        $app['TagsService'] = function() use($em) {
+
+            $logger = new Logger();
+            $tagsService = new TagsService($em, $logger);
+
+            return $tagsService;
+        };
+
+        $app['ProdutosData'] = function() {
+            $data['produtos'] = $this['ProdutoService']->findAll();
+            $data['categorias'] = $this['CategoriaProdutoService']->findAll();
+            $data['tags'] = $this['TagsService']->findAll();
+
+            return $data;
+        };
+
         $app->mount("/", new IndexController());
         $app->mount("/produtos", new ProdutosController());
+        $app->mount("/categorias", new CategoriasController());
+        $app->mount("/tags", new TagsController());
         $app->mount("/api/produtos", new ApiProdutosController());
         $app->mount("/api/categorias", new ApiCategoriaProdutosController());
+        $app->mount("/api/tags", new ApiTagController());
     }
 
 } 

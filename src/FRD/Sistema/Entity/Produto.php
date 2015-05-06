@@ -2,6 +2,7 @@
 
 namespace FRD\Sistema\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,6 +39,20 @@ class Produto
      */
     private $categoria;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="FRD\Sistema\Entity\Tag")
+     * @ORM\JoinTable(name="produtos_tags",
+ *          joinColumns={@ORM\JoinColumn(name="produto_id", referencedColumnName="id")},
+            inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
+     * )
+     */
+    private $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
+
     public function setCategoria($categoria)
     {
         $this->categoria = $categoria;
@@ -46,7 +61,7 @@ class Produto
 
     public function getCategoria()
     {
-        return $this->categoria->getNome();
+        return $this->categoria;
     }
 
     public function setDescricao($descricao)
@@ -93,5 +108,20 @@ class Produto
         return $this->valor;
     }
 
+    public function addTag($tag)
+    {
+        $this->tags->add($tag);
+    }
 
+    public function clearTags()
+    {
+        if (!$this->tags->isEmpty()) {
+            $this->tags->clear();
+        }
+    }
+
+    public function getTags()
+    {
+        return $this->tags;
+    }
 }

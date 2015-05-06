@@ -5,6 +5,7 @@ namespace FRD\Sistema\Service;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use FRD\Sistema\App;
+use FRD\Sistema\Entity\CategoriaSerializer;
 use FRD\Sistema\Entity\Produto;
 use FRD\Sistema\Entity\CategoriaProduto;
 use FRD\Sistema\Logger\Logger;
@@ -12,10 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-class CategoriaProdutoService
+class ApiCategoriaProdutoService
 {
     private $em;
     private $logger;
+    private $produtoArray = [];
 
     function __construct(EntityManager $em, Logger $logger)
     {
@@ -25,23 +27,22 @@ class CategoriaProdutoService
 
     function insert(array $data)
     {
+
         $categoria = new CategoriaProduto();
-        $categoria
-            ->setNome($data["nome"])
-        ;
+        $categoria->setNome($data["nome"]);
 
         $this->em->persist($categoria);
         $this->em->flush();
 
         return $this->logger->success("Categoria {$data['nome']} adicionada com sucesso");
+
     }
 
     function update($id, array $data)
     {
         $categoria = $this->em->getReference("FRD\Sistema\Entity\CategoriaProduto", $id);
-        $categoria
-            ->setNome($data["nome"])
-        ;
+
+        $categoria->setNome($data["nome"]);
 
         $this->em->persist($categoria);
         $this->em->flush();
@@ -59,24 +60,29 @@ class CategoriaProdutoService
 
     function findAll()
     {
-        return $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->findAll();
+        $data = $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->findAll();
+
+        foreach ($data as $object) {
+            $categoriaSerializer = new CategoriaSerializer();
+            $this->produtoArray[] = $categoriaSerializer->serializer($object);
+        }
+
+        return $this->produtoArray;
     }
 
     function find($id)
     {
-        return $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->find($id);
-    }
+        $data = $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->find($id);
+        $categoriaSerializer = new CategoriaSerializer();
 
-    function buscar($keyword, $pag, $max)
-    {
-        return $this->em->getRepository("FRD\Sistema\Entity\CategoriaProduto")->buscar($keyword, $pag, $max);
+        return $categoriaSerializer->serializer($data);
     }
 
     function validate(App $app, array $data)
     {
 
         $constraint = new Assert\Collection(array(
-            'nome' => new Assert\NotBlank()
+            'nome' => new Assert\NotBlank(),
         ));
 
         $validator = new ValidatorService($app, $data, $constraint);

@@ -1,0 +1,20 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h3>Editar {{ categoria.nome }}</h3>
+                <form class="form-group" action="{{ path('alterar_categoria', {'id': categoria.id}) }}" method="POST" >
+                    <input type="hidden" name="_method" value="PUT" />
+                    <div class="form-group">
+                        <label for="nome">Nome:</label>
+                        <input class="form-control" type="text" name="nome" id="nome" size="40" value="{{ categoria.nome }}" />
+                    </div>
+                    <a class="btn btn-info voltar" href="{{ path ('categorias') }}">Voltar</a>
+                    <button type="submit" class="btn btn-success">Atualizar Categoria</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

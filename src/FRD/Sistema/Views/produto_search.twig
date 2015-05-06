@@ -6,11 +6,14 @@
             <div class="col-md-12 column">
                 <h2>Resultados da Busca</h2>
                 <h4>Foram encontrados {{ resultados }} resultados em sua busca:</h4>
-                <ul>
+                <ol>
                     {% for item in busca %}
-                        <li><a href="/produtos/{{ item.id }}">{{ item.nome }} - {{ item.descricao }}</a></li>
+                        <li>
+                            <a href="/produtos/{{ item.id }}">{{ item.nome }}</a><br/>
+                            {{ item.descricao }}
+                        </li><br/>
                     {% endfor %}
-                </ul>
+                </ol>
                 <p>
                     Paginas:
                     {% for i in 1..pages %}

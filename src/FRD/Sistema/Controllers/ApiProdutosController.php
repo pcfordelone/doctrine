@@ -2,6 +2,7 @@
 
 namespace FRD\Sistema\Controllers;
 
+use Doctrine\ORM\AbstractQuery;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,16 +17,14 @@ class ApiProdutosController implements ControllerProviderInterface
         $api_produto = $app['controllers_factory'];
 
         $api_produto->get("/", function() use($app) {
-            $data = $app['ProdutoService']->findAll();
-
-            //var_dump($data);
+            $data = $app['ApiProdutoService']->findAll();
 
             return $app->json($data);
         });
 
 
         $api_produto->get("/{id}", function($id) use($app) {
-            $data = $app['ProdutoService']->find($id);
+            $data = $app['ApiProdutoService']->find($id);
 
             return $app->json($data[0]);
         });
@@ -36,40 +35,42 @@ class ApiProdutosController implements ControllerProviderInterface
             $data['valor'] = floatval($request->get('valor'));
             $data['descricao'] = $request->get('descricao');
             $data['categoria'] = intval($request->get('categoria'));
+            $data['tags'] = $request->get('tags');
 
-            $validator = $app['ProdutoService']->validate($app, $data);
+            $validator = $app['ApiProdutoService']->validate($app, $data);
 
             if (count($validator->getLogErrors()) > 0) {
-                $dados = $app['ProdutoService']->findAll();
+                $dados = $app['ApiProdutoService']->findAll();
                 return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'errors'=>$validator->getLogErrors()]);
             }
 
-            $app['ProdutoService']->insert($data);
+            $app['ApiProdutoService']->insert($data);
             return $app->json($data);
         });
 
         $api_produto->put("/{id}", function(Request $request, $id) use($app) {
             $data['nome'] = $request->get('nome');
-            $data['valor'] = $request->get('valor');
+            $data['categoria'] = $request->get('categoria');
             $data['descricao'] = $request->get('descricao');
+            $data['valor'] = floatval($request->get('valor'));
+            $data['tags'] = $request->get('tags');
 
-            $validator = $app['ProdutoService']->validate($app, $data);
+            $validator = $app['ApiProdutoService']->validate($app, $data);
 
             if (count($validator->getLogErrors()) > 0) {
-                $dados = $app['ProdutoService']->findAll();
-                return $app['twig']->render('produtos.twig',['produtos'=>$dados, 'errors'=>$validator->getLogErrors()]);
+                return "erro";
             }
 
-            $app['ProdutoService']->update($id, $data);
+            $app['ApiProdutoService']->update($id, $data);
+
             return $app->json($data);
         });
 
         $api_produto->delete("/{id}", function($id) use($app) {
-            $app['ProdutoService']->delete($id);
+            $app['ApiProdutoService']->delete($id);
             return $app->json(true);
         });
 
         return $api_produto;
     }
-
 } 

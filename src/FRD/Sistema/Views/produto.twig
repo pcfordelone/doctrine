@@ -14,8 +14,13 @@
                     <div class="form-group">
                         <label for="categoria">Categoria:</label>
                         <select class="form-control" name="categoria" id="categoria">
+                            <option value=0 >Selecione uma categoria</option>
                             {% for categoria in categorias %}
-                                <option value={{ categoria.id }} {% if produto.categoria.id == categoria.id %}selected{% endif %}>
+                                <option value={{ categoria.id }}
+                                    {% if produto.categoria is not null %}
+                                        {% if produto.categoria.id == categoria.id %}selected{% endif %}
+                                    {% endif %}
+                                    >
                                     {{ categoria.nome }}
                                 </option>
                             {% endfor %}

@@ -2,6 +2,7 @@
 
 namespace FRD\Sistema\Controllers;
 
+use FRD\Sistema\Service\UploadFileService;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,16 +41,15 @@ class ProdutosController implements ControllerProviderInterface
             $data['valor'] = floatval($request->get('valor'));
             $data['tags'] = $request->get('tags');
 
+
             $validator = $app['ProdutoService']->validate($app, $data);
 
             if (count($validator->getLogErrors()) > 0) {
                 $dados = $app['ProdutosData'];
-
                 return $app['twig']->render('produtos.twig',['produtos'=>$dados['produtos'], 'categorias'=>$dados['categorias'], 'tags'=>$dados['tags'], 'errors'=>$validator->getLogErrors()]);
             }
 
             $result = $app['ProdutoService']->insert($data);
-
             $dados = $app['ProdutosData'];
 
             return $app['twig']->render('produtos.twig',['produtos'=>$dados['produtos'], 'result'=>$result, 'categorias'=>$dados['categorias'], 'tags'=>$dados['tags']]);

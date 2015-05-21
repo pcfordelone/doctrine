@@ -4,9 +4,11 @@ namespace FRD\Sistema\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use FRD\Sistema\Service\UploadFileService;
 
 /**
  * @ORM\Entity(repositoryClass="FRD\Sistema\Entity\ProdutoRepository")
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="produtos")
  */
 class Produto
@@ -22,6 +24,11 @@ class Produto
      * @ORM\Column(type="string", length=255)
      */
     private $nome;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $image;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -123,5 +130,24 @@ class Produto
     public function getTags()
     {
         return $this->tags;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function uploadImg()
+    {
+        $uploadFileService = new UploadFileService();
+        $this->image = $uploadFileService->upload();
+
+    }
+    public function setImage($image)
+    {
+        $this->image = $image;
+        return $this;
+    }
+    public function getImage()
+    {
+        return $this->image;
     }
 }

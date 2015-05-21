@@ -9,6 +9,7 @@ use FRD\Sistema\Entity\Produto;
 use FRD\Sistema\Entity\CategoriaProduto;
 use FRD\Sistema\Entity\ProdutoSerializer;
 use FRD\Sistema\Logger\Logger;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -71,6 +72,11 @@ class ProdutoService
         foreach ($data["tags"] as $tag_id) {
             $tag = $this->em->getReference("FRD\Sistema\Entity\Tag", $tag_id);
             $produto->addTag($tag);
+        }
+
+        if (!is_null($_FILES['image'])) {
+            $upload = new UploadFileService();
+            $produto->setImage($upload->upload());
         }
 
         $this->em->persist($produto);

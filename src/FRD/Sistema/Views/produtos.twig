@@ -76,7 +76,7 @@
                 </table>
 
                 <h3>Adicionar Produto</h3>
-                <form class="form-group" method="post" action="{{ path('cadastrar_produto') }}" >
+                <form class="form-group" method="post" enctype="multipart/form-data" action="{{ path('cadastrar_produto') }}" >
                     <div class="form-group">
                         <label for="nome">Nome:</label>
                         <input class="form-control" type="text" name="nome" id="nome" size="40" placeholder="insira o nome do produto" />
@@ -101,6 +101,11 @@
                         <label for="valor">Valor: (R$)</label>
                         <input class="form-control" type="number" step="any" name="valor" id="valor" placeholder="insira o valor do produto"/>
                     </div>
+                    <div class="form-group">
+                        <label for="image">Imagem:</label>
+                        <input type="file" id="image" name="image" class="form-control" required/>
+                    </div>
+
                     <div class="form-group">
                         <label for="descricao">Descrição:</label>
                         <textarea id="descricao" class="form-control" name="descricao" placeholder="insira a descrição do produto" rows="5"></textarea>

@@ -5,3 +5,10 @@ body {
 input[type=checkbox] {
     margin-left: 10px;
 }
+
+.produtoImgAdm {
+    max-width: 300px;
+    max-height: 300px;
+    box-shadow: 0 0 5px rgba(0,0,0, .7);
+    margin: 0 0 20px 0;
+}
